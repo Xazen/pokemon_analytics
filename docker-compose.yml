@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: pokemon_postgres
+    environment:
+      POSTGRES_DB: pokemon_analytics
+      POSTGRES_USER: pokemon_user
+      POSTGRES_PASSWORD: pokemon_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init:/docker-entrypoint-initdb.d
+    networks:
+      - pokemon_network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pokemon_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@pokemon.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - pokemon_network
+
+  spark-master:
+    image: bitnami/spark:3.5.0
+    container_name: pokemon_spark_master
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+    networks:
+      - pokemon_network
+
+  spark-worker:
+    image: bitnami/spark:3.5.0
+    container_name: pokemon_spark_worker
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_WORKER_MEMORY=2G
+      - SPARK_WORKER_CORES=2
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    depends_on:
+      - spark-master
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+    networks:
+      - pokemon_network
+
+  jupyter:
+    image: jupyter/pyspark-notebook:latest
+    container_name: pokemon_jupyter
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/home/jovyan/work
+      - ./src:/home/jovyan/src
+      - ./data:/home/jovyan/data
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    networks:
+      - pokemon_network
+
+volumes:
+  postgres_data:
+
+networks:
+  pokemon_network:
+    driver: bridge
