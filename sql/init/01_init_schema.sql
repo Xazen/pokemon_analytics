@@ -80,7 +80,8 @@ CREATE TABLE IF NOT EXISTS raw.usage_stats (
     rank_position INTEGER,
     month_year VARCHAR(7),
     raw_count BIGINT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(pokemon_name, format, month_year)  -- Constraint for ON CONFLICT upserts
 );
 
 CREATE TABLE IF NOT EXISTS raw.team_compositions (
