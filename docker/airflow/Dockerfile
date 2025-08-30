@@ -13,12 +13,12 @@ RUN apt-get update && apt-get install -y \
 USER airflow
 
 # Install Python dependencies for Pokemon Analytics workflows
+# Note: Keep SQLAlchemy compatible with Airflow 2.7.2
 RUN pip install --no-cache-dir \
     beautifulsoup4==4.12.2 \
     pandas==2.1.0 \
     psycopg2-binary==2.9.7 \
     requests==2.31.0 \
-    sqlalchemy==2.0.23 \
     lxml==4.9.3
 
 # Add metadata

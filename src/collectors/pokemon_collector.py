@@ -301,14 +301,15 @@ def main():
     
     args = parser.parse_args()
     
-    # Database configuration
-    db_config = {
-        'host': 'localhost',
-        'port': '5432',
-        'database': 'pokemon_analytics',
-        'user': 'pokemon_user',
-        'password': 'pokemon_pass'
-    }
+    # Import Docker utilities for environment-aware configuration
+    import sys
+    from pathlib import Path
+    sys.path.append(str(Path(__file__).parent.parent))
+    from utils.docker_utils import get_database_config, log_environment_info
+    
+    # Environment-aware database configuration
+    log_environment_info()
+    db_config = get_database_config()
     
     # Initialize collector
     collector = PokeAPICollector(db_config)

@@ -55,18 +55,23 @@ pokemon_analytics/
 ### Setup
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/pokemon-analytics.git
+git clone https://github.com/Xazen/pokemon-analytics.git
 cd pokemon-analytics
 
-# Start the services
+# Build custom Docker images with dependencies
+./build-images.sh
+
+# Start all services
 docker-compose up -d
 
-# Run data collection
-python src/collectors/pokemon_collector.py
-
-# Process data with PySpark
-docker-compose exec spark-master python /app/src/processors/etl_pipeline.py
+# Run complete data pipeline
+docker-compose exec jupyter python /home/jovyan/src/collectors/pokemon_collector.py --all
+docker-compose exec jupyter python /home/jovyan/src/scrapers/showdown_scraper.py --all-formats  
+docker-compose exec spark-master python /app/src/processors/pokemon_etl_pipeline.py
+docker-compose exec jupyter python /home/jovyan/src/analytics/advanced_competitive_analytics.py
 ```
+
+**📋 For detailed Docker setup instructions, see [DOCKER_SETUP.md](DOCKER_SETUP.md)**
 
 ## 📊 Analytics Features
 
