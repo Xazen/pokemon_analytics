@@ -39,7 +39,10 @@ services:
   # Manages workers, distributes tasks, provides cluster UI
   # Access: http://localhost:8080 (Spark UI)
   spark-master:
-    image: bitnami/spark:3.5.0
+    build:
+      context: .
+      dockerfile: docker/spark/Dockerfile
+    image: pokemon-analytics/spark:latest
     container_name: pokemon_spark_master
     environment:
       - SPARK_MODE=master
@@ -60,7 +63,10 @@ services:
   # Connects to master, provides 2GB RAM and 2 CPU cores
   # Handles distributed data processing workloads
   spark-worker:
-    image: bitnami/spark:3.5.0
+    build:
+      context: .
+      dockerfile: docker/spark/Dockerfile
+    image: pokemon-analytics/spark:latest
     container_name: pokemon_spark_worker
     environment:
       - SPARK_MODE=worker
@@ -83,7 +89,10 @@ services:
   # Python notebooks for data analysis and experimentation
   # Access: http://localhost:8888 (check logs for token)
   jupyter:
-    image: jupyter/pyspark-notebook:latest
+    build:
+      context: .
+      dockerfile: docker/jupyter/Dockerfile
+    image: pokemon-analytics/jupyter:latest
     container_name: pokemon_jupyter
     ports:
       - "8888:8888"
@@ -109,7 +118,10 @@ services:
   # Sets up Airflow metadata tables and creates admin user
   # Runs once during first startup, then exits
   airflow-init:
-    image: apache/airflow:2.7.2-python3.9
+    build:
+      context: .
+      dockerfile: docker/airflow/Dockerfile
+    image: pokemon-analytics/airflow:latest
     container_name: pokemon_airflow_init
     depends_on:
       - postgres
@@ -145,7 +157,10 @@ services:
   # Dashboard for monitoring DAGs, tasks, logs, and system health
   # Access: http://localhost:8081 (admin/admin)
   airflow-webserver:
-    image: apache/airflow:2.7.2-python3.9
+    build:
+      context: .
+      dockerfile: docker/airflow/Dockerfile
+    image: pokemon-analytics/airflow:latest
     container_name: pokemon_airflow_webserver
     depends_on:
       - airflow-init
@@ -174,7 +189,10 @@ services:
   # Monitors DAG files, schedules tasks based on dependencies and timing
   # Distributes tasks to Redis queue for worker execution
   airflow-scheduler:
-    image: apache/airflow:2.7.2-python3.9
+    build:
+      context: .
+      dockerfile: docker/airflow/Dockerfile
+    image: pokemon-analytics/airflow:latest
     container_name: pokemon_airflow_scheduler
     depends_on:
       - airflow-init
@@ -200,7 +218,10 @@ services:
   # Consumes tasks from Redis queue and executes them
   # Can scale horizontally by running multiple workers
   airflow-worker:
-    image: apache/airflow:2.7.2-python3.9
+    build:
+      context: .
+      dockerfile: docker/airflow/Dockerfile
+    image: pokemon-analytics/airflow:latest
     container_name: pokemon_airflow_worker
     depends_on:
       - airflow-init
