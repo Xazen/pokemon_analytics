@@ -5,18 +5,21 @@ A comprehensive data analytics project for analyzing competitive Pokemon teams a
 ## 🎯 Project Overview
 
 This portfolio project showcases the complete data pipeline from collection to visualization:
-- **Data Collection**: Pokemon API + competitive team scraping
+- **Data Collection**: Pokemon API + competitive usage scraping from Pokemon Showdown
 - **Big Data Processing**: PySpark for ETL and transformations  
-- **Data Storage**: PostgreSQL data warehouse
+- **Workflow Orchestration**: Apache Airflow for automated data pipelines
+- **Data Storage**: PostgreSQL data warehouse with dimensional modeling
+- **Competitive Intelligence**: Real-time meta analysis and trend detection
 - **Visualization**: PowerBI dashboards
 - **Deployment**: Docker Compose for easy setup
 
 ## 🛠️ Tech Stack
 
 - **Data Processing**: PySpark, Python, pandas, numpy
-- **Database**: PostgreSQL
-- **Containerization**: Docker & Docker Compose
-- **Web Scraping**: BeautifulSoup, requests
+- **Database**: PostgreSQL with dimensional modeling
+- **Workflow Orchestration**: Apache Airflow
+- **Containerization**: Docker & Docker Compose (9 services)
+- **Web Scraping**: BeautifulSoup, requests (Pokemon Showdown scraper)
 - **Analytics**: scikit-learn, matplotlib, seaborn, plotly
 - **Dashboard**: PowerBI
 - **Version Control**: Git
